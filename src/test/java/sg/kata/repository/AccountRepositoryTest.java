@@ -1,6 +1,8 @@
 package sg.kata.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertThrows;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -8,6 +10,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import sg.kata.entity.Account;
 import sg.kata.entity.Customer;
+import sg.kata.exception.AccountNotFoundException;
+import sg.kata.exception.AmountMustBePositiveValueException;
 
 @RunWith(SpringRunner.class)
 public class AccountRepositoryTest {
@@ -47,10 +51,10 @@ public class AccountRepositoryTest {
 	}
 
 	@Test
-	public void fetch_not_exist_account() {
-
-		Account account = accountRepository.getAccount("100007");
-		assertThat(account).isNull();
+	public void fetch_not_exist_account() {	
+		AccountNotFoundException exception = assertThrows(AccountNotFoundException.class, () -> {
+			accountRepository.getAccount("100007");
+		    });
 	}
 
 }
