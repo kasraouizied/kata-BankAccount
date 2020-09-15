@@ -1,5 +1,6 @@
 package sg.kata.entity;
 
+import sg.kata.exception.AmountNotAvailableException;
 
 public class Account {
 
@@ -15,9 +16,11 @@ public class Account {
     	this.customer = customer;
     }
     
-    public void depositInAccount(long deposit) {
-    	this.solde = this.solde + deposit;
-    }
+	public void depositInAccount(long deposit) {
+		synchronized (this) {
+			this.solde = this.solde + deposit;
+		}
+	}
 
 	public long getSolde() {
 		return solde;
@@ -30,7 +33,14 @@ public class Account {
 	public Customer getCustomer() {
 		return customer;
 	}
-    
-    
-   
+
+	public void retreiveFromAccount(long amount) throws AmountNotAvailableException {
+		synchronized (this) {
+			if (getSolde() < amount) {
+				throw new AmountNotAvailableException("Amount not available");
+			}
+			this.solde = this.solde - amount;
+		}
+	}
+       
 }
