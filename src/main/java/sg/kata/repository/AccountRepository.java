@@ -16,15 +16,14 @@ public class AccountRepository {
 	public AccountRepository() {
 		accounts = new HashMap<String, Account>();
 	}
-	public void addToAccount(String accountNumber, Account account) {
-		accounts.put(accountNumber, account);
+	public void addToAccount(Account account) {
+		accounts.put(account.getNumAccount(), account);
 	}
 		
 	public Account getAccount(String accountNumber) {
-		Account account = accounts.get(accountNumber);
-		if (account == null) {
+		if (! accounts.containsKey(accountNumber))
 			throw new AccountNotFoundException("Account don't exist");
-		}
+		
 		return accounts.get(accountNumber);
 	}
 }

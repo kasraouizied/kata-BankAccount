@@ -2,6 +2,7 @@ package sg.kata.entity;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
 
 import sg.kata.exception.AmountMustBePositiveValueException;
 import sg.kata.exception.AmountNotAvailableException;
@@ -14,7 +15,7 @@ public class Account {
     
     private final Customer customer;
     
-    private ArrayList<Operation> operations;
+    private List<Operation> operations;
     
     public Account(String numAccount, long solde, Customer customer) {
     	this.numAccount = numAccount;
@@ -23,17 +24,16 @@ public class Account {
     	this.operations = new ArrayList<Operation>();
     }
     
-	public void depositInAccount(long amount) {
-		synchronized (this) {
-			if ( amount < 0 ) {
-				throw new AmountMustBePositiveValueException("Amount must be positive value");
-			}
-			this.solde = this.solde + amount;
-			this.registerOperation(OperationType.DEPOSIT, amount);
+	public synchronized void depositInAccount(long amount) {
+		if (amount < 0) {
+			throw new AmountMustBePositiveValueException("Amount must be positive value");
 		}
+		this.solde += amount;
+
+		this.registerOperation(OperationType.DEPOSIT, amount);
 	}
 	
-	public ArrayList<Operation> getOperation() {
+	public List<Operation> getOperation() {
 		return operations;
 	}
 
@@ -49,17 +49,15 @@ public class Account {
 		return customer;
 	}
 
-	public void retreiveFromAccount(long amount) throws AmountNotAvailableException {
-		synchronized (this) {
-			if ( amount < 0 ) {
-				throw new AmountMustBePositiveValueException("Amount must be positive value");
-			}
-			if (getSolde() < amount) {
-				throw new AmountNotAvailableException("Amount not available");
-			}
-			this.solde = this.solde - amount;
-			this.registerOperation(OperationType.WITHDRAWL, amount);
+	public synchronized void retreiveFromAccount(long amount) throws Exception {
+		if (amount < 0) {
+			throw new AmountMustBePositiveValueException("Amount must be positive value");
 		}
+		if (getSolde() < amount) {
+			throw new AmountNotAvailableException("Amount not available");
+		}
+		this.solde -= amount;
+		this.registerOperation(OperationType.WITHDRAWL, amount);
 	}
 	
 	private void registerOperation(OperationType operationType, long amount) {

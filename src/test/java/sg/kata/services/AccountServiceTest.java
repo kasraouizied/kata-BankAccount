@@ -6,7 +6,7 @@ import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doReturn;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -62,7 +62,7 @@ public class AccountServiceTest {
     	Account initialAccount = new Account("100001", 600, customer);
     	doReturn(initialAccount).when(accountRepository).getAccount("100001");
     	
-    	AmountMustBePositiveValueException exception = assertThrows(AmountMustBePositiveValueException.class, () -> {
+    	assertThrows(AmountMustBePositiveValueException.class, () -> {
     		   accountService.retreiveAmount("100001", -100);
 		    });
     }
@@ -83,7 +83,7 @@ public class AccountServiceTest {
     	Account initialAccount = new Account("100001", 600, customer);
     	doReturn(initialAccount).when(accountRepository).getAccount("100001");
     	
-    	AmountMustBePositiveValueException exception = assertThrows(AmountMustBePositiveValueException.class, () -> {
+        assertThrows(AmountMustBePositiveValueException.class, () -> {
     		   accountService.retreiveAmount("100001", -200);
 		    });
     }
@@ -111,7 +111,7 @@ public class AccountServiceTest {
         accountService.retreiveAllAmount("100001");
         accountService.depositAmount("100001", 500);
         accountService.retreiveAmount("100001", 50);
-        ArrayList<Operation> operations = accountService.returnAllOperation("100001");
+        List<Operation> operations = accountService.returnAllOperation("100001");
         
         Operation operation1 = operations.get(0);
         assertEquals(operation1.getAmount(), 10);
